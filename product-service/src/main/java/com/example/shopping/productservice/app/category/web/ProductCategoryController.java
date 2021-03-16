@@ -4,6 +4,9 @@ import com.example.shopping.productservice.app.category.domain.ProductCategory;
 import com.example.shopping.productservice.app.category.dto.ProductCategoryRequest;
 import com.example.shopping.productservice.app.category.service.ProductCategoryService;
 import com.example.shopping.productservice.app.product.domain.Product;
+import com.example.shopping.productservice.exception.ErrorUtil;
+import com.example.shopping.productservice.exception.ProductCategoryException;
+import com.example.shopping.productservice.exception.ProductServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +36,7 @@ public class ProductCategoryController {
     @PostMapping(value = "/category/add")
     public ResponseEntity<?> addCategory(@RequestBody ProductCategoryRequest productCategoryRequest) {
         productCategoryService.createProductCategory(productCategoryRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // Get product category by category id
@@ -56,15 +59,24 @@ public class ProductCategoryController {
     }
 
     // Update category by category id
-    @PutMapping(value = "/category/{categoryId}/edit")
-    public ResponseEntity<?> updateCategory(@RequestBody @Valid ProductCategoryRequest productCategoryRequest, @PathVariable("categoryId") Long categoryId) {
+//    @PutMapping(value = "/category/{categoryId}/edit")
+//    public ResponseEntity<?> updateCategory(@RequestBody @Valid ProductCategoryRequest productCategoryRequest, @PathVariable("categoryId") Long categoryId) {
+    @PutMapping(value = "/category/edit")
+    public ResponseEntity<?> updateCategory(@RequestBody @Valid ProductCategoryRequest productCategoryRequest) {
         productCategoryService.updateCategory(productCategoryRequest);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (productCategoryRequest.getCategoryId() == null) {
+            return ErrorUtil.create(HttpStatus.BAD_REQUEST, "no category id");
+        }
+//        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(productCategoryService.getProductCategory(productCategoryRequest.getCategoryId()));
     }
 
     // Delete category by category id
     @DeleteMapping(value = "/category/{categoryId}/delete")
     public ResponseEntity<?> deleteCategory(@PathVariable("categoryId") Long categoryId) {
+        if (categoryId == null) {
+            throw new ProductCategoryException("No category Id");
+        }
         productCategoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
