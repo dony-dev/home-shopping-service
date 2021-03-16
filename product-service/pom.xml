@@ -129,6 +129,20 @@
 
 	<build>
 		<plugins>
+			<!-- 2021. 03. 16 -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- https://mapstruct.org/documentation/installation/ -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -150,6 +164,21 @@
 							<version>1.18.8</version>
 						</path>
 					</annotationProcessorPaths>
+
+					<!-- 2021. 03. 15 -->
+					<!-- due to problem in maven-compiler-plugin, for verbose mode add showWarnings -->
+					<showWarnings>true</showWarnings>
+					<compilerArgs>
+						<arg>
+							-Amapstruct.suppressGeneratorTimestamp=true
+						</arg>
+						<arg>
+							-Amapstruct.suppressGeneratorVersionInfoComment=true
+						</arg>
+						<arg>
+							-Amapstruct.verbose=true
+						</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>
