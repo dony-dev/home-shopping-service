@@ -13,53 +13,59 @@
 
 <body>
 <div>
-    <h2>Category</h2>
+    <h2>Products</h2>
     <div>
-        <h3>Get Category By Page</h3>
-        <button id="getCategoryPage" value="Get All Categories" type="button">Get Categories By Page</button>
+        <h3>Get Products By Page</h3>
+        <button id="getProductPage" value="Get Products By Page" type="button">Get Products By Page</button>
     </div>
 
+    <!--
     <div>
-        <h3>Get All Categories</h3>
-        <button id="getAllCategory" value="Get All Categories" type="button">Get All Categories</button>
+        <h3>Get All Products</h3>
+        <button id="getAllProduct" value="Get All Products" type="button">Get All Products</button>
     </div>
+    -->
 
     <div>
-        <h3>Create Category</h3>
-        <form id="createCategoryForm">
-            <input type="text" id="categoryName" name="categoryName" placeholder="Category Name" />
-            <input type="text" id="categoryDescription" name="categoryDescription" placeholder="Category Description" />
+        <h3>Create Product</h3>
+        <form id="createProductForm">
+            <input type="text" id="productName" name="productName" placeholder="Product Name" />
+            <input type="text" id="productDescription" name="productDescription" placeholder="Product Description" />
+            <input type="number" id="productPrice" name="productPrice" placeholder="Product Price" />
+            <input type="number" id="productCategoryId" name="categoryId" placeholder="Category Id" />
             <button type="submit">Submit</button>
         </form>
     </div>
 
     <div>
-        <h3>Update Category</h3>
-        <form id="updateCategoryForm">
-            <input type="text" id="updateCategoryId" name="categoryId" placeholder="Category Id" />
-            <input type="text" name="categoryName" placeholder="Update Category Name" />
-            <input type="text" name="categoryDescription" placeholder="Update Category Description" />
+        <h3>Update Product</h3>
+        <form id="updateProductForm">
+            <input type="text" id="updateProductId" name="productId" placeholder="Product Id" />
+            <input type="text" id="updateProductName" name="productName" placeholder="Product Name" />
+            <input type="text" id="updateProductDescription" name="productDescription" placeholder="Product Description" />
+            <input type="number" id="updateProductPrice" name="productPrice" placeholder="Product Price" />
+            <input type="number" id="updateProductCategoryId" name="categoryId" placeholder="Category Id" />
             <button type="submit">Submit</button>
         </form>
     </div>
 
     <div>
-        <h3>Delete Category</h3>
-        <form id="deleteCategoryForm">
-            <input type="text" id="deleteCategoryId" name="categoryId" placeholder="Category Id" />
+        <h3>Delete Product</h3>
+        <form id="deleteProductForm">
+            <input type="text" id="deleteProductId" name="productId" placeholder="Product Id" />
             <button type="submit">Submit</button>
         </form>
     </div>
 
     <div>
-        <h3>Get Category By Id</h3>
-        <form id="getCategoryForm">
-            <input type="text" id="getCategoryId" name="categoryId" placeholder="Category Id" />
+        <h3>Get Product By Id</h3>
+        <form id="getProductForm">
+            <input type="text" id="getProductId" name="productId" placeholder="Product Id" />
             <button type="submit">Submit</button>
         </form>
     </div>
 
-    <div id="categoryResult"></div>
+    <div id="productResult"></div>
 
 </div>
 
@@ -74,17 +80,17 @@
 <script type="text/javascript">
         $(document).ready(function () {
 
-            $('#getCategoryPage').click(function (event) {
+            $('#getProductPage').click(function (event) {
                 event.preventDefault();
-                console.log('click getCategoryPage');
+                console.log('click getProductPage');
 
-                /* Category Page */
+                /* Product Page */
                 var pageNumber = (typeof page !== 'undefined') ? page : 0;
                 var sizeNumber = (typeof size !== 'undefined') ? size : 5;
 
                 $.ajax({
                     type: "GET",
-                    url: "/api/categories/page",
+                    url: "/api/products/page",
                     data: {
                         page: pageNumber,
                         size: sizeNumber
@@ -93,154 +99,152 @@
                         console.log('response: ', response);
                         var resultJson = JSON.stringify(response);
                         console.log('resultJson: ', resultJson);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     },
                     error: function (e) {
                         alert("ERROR: ", e);
                         console.log("ERROR: ", e);
                         var resultJson = JSON.stringify(e);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     }
                 });
             });
 
-            /* Get All Categories */
-            $('#getAllCategory').click(function (event) {
+            /* Get All Products */
+            $('#getAllProduct').click(function (event) {
                 event.preventDefault();
-                console.log('click getAllCategory');
+                console.log('click getAllProduct');
 
                 $.ajax({
                     type: "GET",
-                    url: "/api/categories",
+                    url: "/api/products",
                     success: function (response) {
                         console.log('response: ', response);
                         var resultJson = JSON.stringify(response);
                         console.log('resultJson: ', resultJson);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     },
                     error: function (e) {
                         alert("ERROR: ", e);
                         console.log("ERROR: ", e);
                         var resultJson = JSON.stringify(e);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     }
                 });
             });
 
 
-            /* Create Category */
-            $('#createCategoryForm').submit(function (event) {
+            /* Create Product */
+            $('#createProductForm').submit(function (event) {
                 event.preventDefault();
-                console.log('click createCategoryForm');
+                console.log('click createProductForm');
 
-                deleteCategoryId
-                var categoryNameValue = $('#categoryName').val();
-                var categoryDescriptionValue = $('#categoryDescription').val();
-
-                var formData = $('#createCategoryForm').serializeObject();
+                var formData = $('#createProductForm').serializeObject();
                 console.log('formData: ', formData);
                 var data = JSON.stringify(formData);
 
                 $.ajax({
                     type: "POST",
-                    url: "/api/categories/category/add",
+                    url: "/api/products/product/create",
                     contentType: "application/json",
                     data: data,
                     success: function (response) {
                         console.log('response: ', response);
                         var resultJson = JSON.stringify(response);
                         console.log('resultJson: ', resultJson);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     },
                     error: function (e) {
                         alert("ERROR: ", e);
                         console.log("ERROR: ", e);
                         var resultJson = JSON.stringify(e);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     }
                 });
             });
 
 
-            /* Update Category */
-            $('#updateCategoryForm').submit(function (event) {
+            /* Update Product */
+            $('#updateProductForm').submit(function (event) {
                 event.preventDefault();
-                console.log('click updateCategoryForm');
+                console.log('click updateProductForm');
 
-                var formData = $('#updateCategoryForm').serializeObject();
+                var formData = $('#updateProductForm').serializeObject();
                 console.log('formData: ', formData);
                 var data = JSON.stringify(formData);
                 //var categoryId = formData.categoryId;
 
+                var productIdValue = $('#updateProductId').val();
+
                 $.ajax({
                     type: "PUT",
-                    url: "/api/categories/category/edit",
+                    url: "/api/products/product/" + productIdValue + "/edit",
                     contentType: "application/json",
                     data: data,
                     success: function (response) {
                         console.log('response: ', response);
                         var resultJson = JSON.stringify(response);
                         console.log('resultJson: ', resultJson);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     },
                     error: function (e) {
                         alert("ERROR: ", e);
                         console.log("ERROR: ", e);
                         var resultJson = JSON.stringify(e);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     }
                 });
             });
 
 
-            /* Delete Category */
-            $('#deleteCategoryForm').submit(function (event) {
+            /* Delete Product */
+            $('#deleteProductForm').submit(function (event) {
                 event.preventDefault();
-                console.log('click deleteCategoryForm');
-                var categoryIdValue = $('#deleteCategoryId').val();
+                console.log('click deleteProductForm');
+                var productIdValue = $('#deleteProductId').val();
 
                 $.ajax({
                     type: "DELETE",
-                    url: "/api/categories/category/" + categoryIdValue + "/delete",
+                    url: "/api/products/product/" + productIdValue + "/delete",
                     contentType: "application/json",
                     success: function (response) {
                         console.log('response: ', response);
                         var resultJson = JSON.stringify(response);
                         console.log('resultJson: ', resultJson);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     },
                     error: function (e) {
                         alert("ERROR: ", e);
                         console.log("ERROR: ", e);
                         var resultJson = JSON.stringify(e);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     }
                 });
             });
 
 
-            /* Get Category Detail */
-            $('#getCategoryForm').submit(function (event) {
+            /* Get Product Detail */
+            $('#getProductForm').submit(function (event) {
                 event.preventDefault();
-                console.log('click getCategoryForm');
+                console.log('click getProductForm');
 
-                var categoryIdValue = $('#getCategoryId').val();
+                var productIdValue = $('#getProductId').val();
 
                 $.ajax({
                     type: "GET",
-                    url: "/api/categories/category/" + categoryIdValue,
+                    url: "/api/products/product/" + productIdValue,
                     contentType: "application/json",
                     success: function (response) {
                         console.log('response: ', response);
                         var resultJson = JSON.stringify(response);
                         console.log('resultJson: ', resultJson);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     },
                     error: function (e) {
                         alert("ERROR: ", e);
                         console.log("ERROR: ", e);
                         var resultJson = JSON.stringify(e);
-                        $('#categoryResult').html(resultJson);
+                        $('#productResult').html(resultJson);
                     }
                 });
             });

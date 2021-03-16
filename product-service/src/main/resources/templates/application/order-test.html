@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap CRUD Data Table for Database with Modal Form</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+<div>
+    <h2>Products</h2>
+
+    <div>
+        <h3>Get Products By Page</h3>
+        <button id="getProductPage" value="Get Products By Page" type="button">Get Products By Page</button>
+    </div>
+
+    <div>
+        <h3>Get All Orders</h3>
+        <button id="getAllOrders" value="Get All Orders" type="button">Get All Orders</button>
+    </div>
+
+    <div>
+        <h3>Get Orders By Page</h3>
+        <button id="getOrderPage" value="Get Orders By Page" type="button">Get Orders By Page</button>
+    </div>
+
+    <div>
+        <h3>Get Order By Id</h3>
+        <form id="getOrderForm">
+            <input type="text" id="getOrderId" name="orderId" placeholder="Order Id" />
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div>
+        <h3>Do Order</h3>
+        <form id="doOrderForm">
+            <div>
+                    <textarea id="orderExample" cols=50 rows=20>
+{
+    "order": {
+        "orderName": "orderTest",
+        "orderDescription": "orderDescription"
+    },
+    "products": [
+        {
+            "productId":1,
+            "quantity":3
+        },
+        {
+            "productId":2,
+            "quantity":4
+        },
+        {
+            "productId":3,
+            "quantity":5
+        }
+    ]
+}
+            </textarea>
+                <!--
+        <button id="prettyPrintBtn">Pretty Print</button>
+        -->
+            </div>
+            <div>
+                <!--
+            <input type="text" style="width:400px;height:300px;" id="orderExample" name="orderExample" placeholder="Order Example"/>
+            -->
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <h3>Update Order</h3>
+        <form id="updateOrderForm">
+            <div>
+                    <textarea id="updateOrderExample" cols=60 rows=20>
+{
+    "order": {
+        "orderId": 1,
+        "orderName": "orderTest",
+        "orderDescription": "orderDescription"
+    },
+    "products": [
+        {
+            "productId":1,
+            "quantity":3
+        },
+        {
+            "productId":2,
+            "quantity":4
+        },
+        {
+            "productId":3,
+            "quantity":5
+        }
+    ]
+}
+            </textarea>
+            </div>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <h3>Delete Order</h3>
+        <form id="deleteOrderForm">
+            <input type="text" id="deleteOrderId" name="orderId" placeholder="Order Id" />
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="orderResult"></div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<script src="/js/jquery-form-serializer.js"></script>
+<script src="/js/datatables.min.js"></script>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#getProductPage').click(function (event) {
+                event.preventDefault();
+                console.log('click getProductPage');
+
+                /* Product Page */
+                var pageNumber = (typeof page !== 'undefined') ? page : 0;
+                var sizeNumber = (typeof size !== 'undefined') ? size : 5;
+
+                $.ajax({
+                    type: "GET",
+                    url: "/api/products/page",
+                    data: {
+                        page: pageNumber,
+                        size: sizeNumber
+                    },
+                    success: function (response) {
+                        console.log('response: ', response);
+                        var resultJson = JSON.stringify(response);
+                        console.log('resultJson: ', resultJson);
+                        $('#orderResult').html(resultJson);
+                    },
+                    error: function (e) {
+                        alert("ERROR: ", e);
+                        console.log("ERROR: ", e);
+                        var resultJson = JSON.stringify(e);
+                        $('#orderResult').html(resultJson);
+                    }
+                });
+            });
+
+            /* Get orders by page */
+            $('#getOrderPage').click(function (event) {
+                event.preventDefault();
+                console.log('click getOrderPage');
+
+                /* Product Page */
+                var pageNumber = (typeof page !== 'undefined') ? page : 0;
+                var sizeNumber = (typeof size !== 'undefined') ? size : 5;
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:9092/api/orders/page",
+                    data: {
+                        page: pageNumber,
+                        size: sizeNumber
+                    },
+                    success: function (response) {
+                        console.log('response: ', response);
+                        var resultJson = JSON.stringify(response);
+                        console.log('resultJson: ', resultJson);
+                        $('#orderResult').html(resultJson);
+                    },
+                    error: function (e) {
+                        alert("ERROR: ", e);
+                        console.log("ERROR: ", e);
+                        var resultJson = JSON.stringify(e);
+                        $('#orderResult').html(resultJson);
+                    }
+                });
+            });
+
+
+            /* Get All Orders */
+            $('#getAllOrders').click(function (event) {
+                event.preventDefault();
+                console.log('click getAllOrders');
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:9092/api/orders",
+                    success: function (response) {
+                        console.log('response: ', response);
+                        var resultJson = JSON.stringify(response);
+                        console.log('resultJson: ', resultJson);
+                        $('#orderResult').html(resultJson);
+                    },
+                    error: function (e) {
+                        alert("ERROR: ", e);
+                        console.log("ERROR: ", e);
+                        var resultJson = JSON.stringify(e);
+                        $('#orderResult').html(resultJson);
+                    }
+                });
+            });
+
+            /* Do Order */
+            $('#doOrderForm').submit(function (event) {
+                event.preventDefault();
+                console.log('click doOrderForm');
+
+                var formData = $('#doOrderForm').serializeObject();
+                console.log('formData: ', formData);
+                console.log('formData.orderExample: ', formData.orderExample);
+
+                var data = JSON.stringify(formData);
+                console.log('data: ', data);
+
+                var strData = $('#orderExample').val();
+
+                //var formDataOrder = $('#addOrderForm').serializeObject();
+                //var formDataProducts = $('addOrderProductForm').serializeObject();
+                //var formData;
+                //formData.append(formDataOrder, formDataProducts);
+                //console.log('formData: ', formData);
+
+                //var data = JSON.stringify(formData);
+                //console.log('data: ', data);
+
+                /* */
+                var ugly = $('#orderExample').val();
+                console.log('ugly: ', ugly);
+                var obj = JSON.parse(ugly);
+                console.log('obj: ', obj);
+                var pretty = JSON.stringify(obj, undefined, 4);
+                console.log('pretty: ', pretty);
+                $('#orderExample').html(pretty);
+
+                data = pretty;
+                console.log('data: ', data);
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:9092/api/orders/do-multiple-order",
+                    contentType: "application/json",
+                    //data: formData.orderExample,
+                    data: data,
+                    success: function (response) {
+                        console.log('response: ', response);
+                        var resultJson = JSON.stringify(response);
+                        console.log('resultJson: ', resultJson);
+                        $('#orderResult').html(resultJson);
+                    },
+                    error: function (e) {
+                        alert("ERROR: ", e);
+                        console.log("ERROR: ", e);
+                        var resultJson = JSON.stringify(e);
+                        $('#orderResult').html(resultJson);
+                    }
+                });
+            });
+
+            /* Get Order Detail */
+            $('#getOrderForm').submit(function (event) {
+                event.preventDefault();
+                console.log('click getOrderForm');
+
+                var orderIdValue = $('#getOrderId').val();
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:9092/api/orders/all/" + orderIdValue,
+                    contentType: "application/json",
+                    success: function (response) {
+                        console.log('response: ', response);
+                        var resultJson = JSON.stringify(response);
+                        console.log('resultJson: ', resultJson);
+                        $('#orderResult').html(resultJson);
+                    },
+                    error: function (e) {
+                        alert("ERROR: ", e);
+                        console.log("ERROR: ", e);
+                        var resultJson = JSON.stringify(e);
+                        $('#orderResult').html(resultJson);
+                    }
+                });
+            });
+
+
+            /* Update Order */
+            $('#updateOrderForm').submit(function (event) {
+                event.preventDefault();
+                console.log('click updateOrderForm');
+
+                /* */
+                var ugly = $('#updateOrderExample').val();
+                var obj = JSON.parse(ugly);
+                var pretty = JSON.stringify(obj, undefined, 4);
+                var data = pretty;
+                console.log('data: ', data);
+
+                $.ajax({
+                    type: "PUT",
+                    url: "http://localhost:9092/api/orders/update-order",
+                    contentType: "application/json",
+                    data: data,
+                    success: function (response) {
+                        console.log('response: ', response);
+                        var resultJson = JSON.stringify(response);
+                        console.log('resultJson: ', resultJson);
+                        $('#orderResult').html(resultJson);
+                    },
+                    error: function (e) {
+                        alert("ERROR: ", e);
+                        console.log("ERROR: ", e);
+                        var resultJson = JSON.stringify(e);
+                        $('#orderResult').html(resultJson);
+                    }
+                });
+            });
+
+            /* Delete Order */
+            $('#deleteOrderForm').submit(function (event) {
+                event.preventDefault();
+                console.log('click deleteOrderForm');
+                var orderIdValue = $('#deleteOrderId').val();
+
+                $.ajax({
+                    type: "DELETE",
+                    url: "http://localhost:9092/api/orders/delete/" + orderIdValue,
+                    contentType: "application/json",
+                    success: function (response) {
+                        console.log('response: ', response);
+                        var resultJson = JSON.stringify(response);
+                        console.log('resultJson: ', resultJson);
+                        $('#orderResult').html(resultJson);
+                    },
+                    error: function (e) {
+                        alert("ERROR: ", e);
+                        console.log("ERROR: ", e);
+                        var resultJson = JSON.stringify(e);
+                        $('#orderResult').html(resultJson);
+                    }
+                });
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

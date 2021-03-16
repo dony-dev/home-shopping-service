@@ -33,4 +33,11 @@ public class OrderProductRequest {
         this.products = products;
     }
 
+    @Override
+    public String toString() {
+        return "OrderProductRequest{" +
+                "order=" + order +
+                ", products=" + products +
+                '}';
+    }
 }

@@ -7,17 +7,23 @@ import com.example.shopping.productservice.app.product.dto.ProductRequest;
 import com.example.shopping.productservice.app.product.mapper.ProductMapper;
 import com.example.shopping.productservice.app.product.repository.ProductRepository;
 import com.example.shopping.productservice.exception.ProductServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
+
+    private Logger log = LoggerFactory.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
@@ -91,4 +97,24 @@ public class ProductService {
         productRepository.delete(product);
     }
 
+    // Find all by multiple product ids
+    public List<Product> findAllByMultipleIds(Map<String, List<Long>> params) {
+        List<Product> productList = new ArrayList<>();
+        for (Long productId : params.get("productIds")) {
+            Product product = productRepository.findById(productId).orElseThrow(() -> new ProductServiceException("product with " + productId + " not found"));
+            productList.add(product);
+        }
+        log.info("productList: {}", productList);
+        return productList;
+    }
+
+    public List<Product> findAllByIdLIst(List<Long> productIds) {
+        List<Product> productList = new ArrayList<>();
+        for (Long productId : productIds) {
+            Product product = productRepository.findById(productId).orElseThrow(() -> new ProductServiceException("product with " + productId + " not found"));
+            productList.add(product);
+        }
+        log.info("productList: {}", productList);
+        return productList;
+    }
 }
