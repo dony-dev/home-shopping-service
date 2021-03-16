@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/products")
@@ -43,15 +44,16 @@ public class ProductController {
 //    }
 
     @GetMapping(value = "/product/{productId}")
-    public ResponseEntity<Product> getProductById(@PathVariable("productId") Long productId) {
+    public ResponseEntity<?> getProductById(@PathVariable("productId") Long productId) {
         Product product = productService.findById(productId);
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
     @PutMapping(value = "/product/{productId}/edit")
-    public ResponseEntity<?> updateProduct(@RequestBody @Valid Product product, @PathVariable("productId") Long id) {
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid Product product, @PathVariable("productId") Long productId) {
         productService.update(product);
-        return new ResponseEntity<>(HttpStatus.OK);
+//        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findById(productId));
     }
 
     @DeleteMapping(value = "/product/{productId}/delete")
@@ -64,5 +66,17 @@ public class ProductController {
     public Page<Product> getProductByPagination(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                 @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return productService.findAllByPage(page, size);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findAll());
+    }
+
+    // Find all by multiple product Ids
+    @GetMapping(value = "/product/eureka")
+    public ResponseEntity<List<Product>> getProductByMultipleIds(@RequestParam(name = "productIds") List<Long> params) {
+        List<Product> productList = productService.findAllByIdLIst(params);
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 }

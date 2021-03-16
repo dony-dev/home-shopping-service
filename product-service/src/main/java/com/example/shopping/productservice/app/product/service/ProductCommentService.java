@@ -1,5 +1,6 @@
 package com.example.shopping.productservice.app.product.service;
 
+import com.example.shopping.productservice.app.category.mapper.ProductCategoryMapper;
 import com.example.shopping.productservice.app.product.domain.Product;
 import com.example.shopping.productservice.app.product.domain.ProductComment;
 import com.example.shopping.productservice.app.product.dto.ProductCommentDto;
@@ -20,11 +21,13 @@ public class ProductCommentService {
     private final ProductCommentRepository productCommentRepository;
     private final ProductRepository productRepository;
     private final ProductCommentMapper productCommentMapper;
+    private final ProductCategoryMapper productCategoryMapper;
 
-    public ProductCommentService(ProductCommentRepository productCommentRepository, ProductRepository productRepository, ProductCommentMapper productCommentMapper) {
+    public ProductCommentService(ProductCommentRepository productCommentRepository, ProductRepository productRepository, ProductCommentMapper productCommentMapper, ProductCategoryMapper productCategoryMapper) {
         this.productCommentRepository = productCommentRepository;
         this.productRepository = productRepository;
         this.productCommentMapper = productCommentMapper;
+        this.productCategoryMapper = productCategoryMapper;
     }
 
     // Create product comment
