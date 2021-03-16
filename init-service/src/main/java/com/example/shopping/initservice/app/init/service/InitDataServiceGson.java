@@ -1,47 +1,31 @@
-package com.example.shopping.initservice;
+package com.example.shopping.initservice.app.init.service;
 
-import com.example.shopping.initservice.app.init.service.InitDataServiceGson;
 import com.example.shopping.initservice.app.init.shared.ProductRequest;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.junit.jupiter.api.Test;
+import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
-class InitServiceApplicationTests {
+@Service
+public class InitDataServiceGson {
 
     private final String fileLocation = "config/init_product_service.json";
     private Logger log = LoggerFactory.getLogger(InitDataServiceGson.class);
+
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
     private LoadBalancerClient loadBalancerClient;
-
-    @Test
-    void contextLoads() {
-    }
-
-    @Test
-    public void test() {
-        executeWithForLoop();
-        executeWithStream();
-    }
 
     public void executeWithForLoop() {
         Long startTime = System.nanoTime();
@@ -88,6 +72,7 @@ class InitServiceApplicationTests {
 
     private String readJsonFile(String fileLocation) {
         StringBuilder sb = new StringBuilder();
+//        Resource resource = new ClassPathResource(fileLocation);
         try (InputStream inputStream = new ClassPathResource(fileLocation).getInputStream();
              BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
 
@@ -126,5 +111,4 @@ class InitServiceApplicationTests {
 
         return productRequestList;
     }
-
 }

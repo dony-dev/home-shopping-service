@@ -43,9 +43,28 @@ public class InitDataService {
 
         List<ProductCategoryRequest> productCategoryRequestList = getCategoryFromNode(categoryNode);
         log.info("productCategoryRequestList.size: {}", productCategoryRequestList.size());
+
+        Long startTime = System.nanoTime();
         productCategoryRequestList.stream().forEach(productCategoryRequest -> {
             productCategoryService.createProductCategory(productCategoryRequest);
         });
+        Long result1 = System.nanoTime() - startTime;
+        log.info("nano time 1: {}", result1);
+
+        Long startTime2 = System.nanoTime();
+        productCategoryRequestList.stream().map(productCategoryRequest -> {
+            productCategoryService.createProductCategory(productCategoryRequest);
+            return "";
+        });
+        Long result2 = System.nanoTime() - startTime2;
+        log.info("nano time 2: {}", result2);
+
+        Long startTime3 = System.nanoTime();
+        for (ProductCategoryRequest productCategoryRequest : productCategoryRequestList) {
+            productCategoryService.createProductCategory(productCategoryRequest);
+        }
+        Long result3 = System.nanoTime() - startTime3;
+        log.info("nano time 3: {}", result3);
     }
 
     @Transactional
