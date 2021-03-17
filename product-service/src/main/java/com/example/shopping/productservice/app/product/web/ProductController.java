@@ -3,8 +3,10 @@ package com.example.shopping.productservice.app.product.web;
 import com.example.shopping.productservice.app.product.domain.Product;
 import com.example.shopping.productservice.app.product.dto.ProductRequest;
 import com.example.shopping.productservice.app.product.service.ProductService;
+import com.example.shopping.productservice.app.product.util.ProductJsonView;
 import com.example.shopping.productservice.exception.ErrorUtil;
 import com.example.shopping.productservice.exception.ProductServiceException;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +52,7 @@ public class ProductController {
 //        Product product = productService.findById(productId);
 //        return ResponseEntity.status(HttpStatus.OK).body(product);
 //    }
+    @JsonView(ProductJsonView.ProductDetail.class)
     @GetMapping(value = "/product/{productId}")
     public ResponseEntity<?> getProductById(@PathVariable("productId") Long productId) {
         if (productId == null) {
@@ -84,6 +87,12 @@ public class ProductController {
     public Page<Product> getProductByPagination(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                 @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return productService.findAllByPage(page, size);
+    }
+
+    @JsonView({ProductJsonView.ProductList.class})
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findAll());
     }
 
     // Find all by multiple product Ids

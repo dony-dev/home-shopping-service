@@ -1,6 +1,8 @@
 package com.example.shopping.productservice.app.product.domain;
 
 import com.example.shopping.productservice.app.category.domain.ProductCategory;
+import com.example.shopping.productservice.app.product.util.ProductJsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -10,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+@JsonView({ProductJsonView.ProductList.class, ProductJsonView.ProductDetail.class})
 @Table(name = "tb_product")
 @Entity
 public class Product {

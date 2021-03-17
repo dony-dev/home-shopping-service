@@ -1,12 +1,20 @@
 package com.example.shopping.productservice.app.category.domain;
 
 import com.example.shopping.productservice.app.product.domain.Product;
+import com.example.shopping.productservice.app.category.util.ProductCategoryJsonView;
+import com.example.shopping.productservice.app.product.util.ProductJsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Table(name = "tb_product_category")
 @Entity
+//@JsonView({ProductCategoryJsonView.CategoryList.class})
+@JsonView({
+        ProductCategoryJsonView.CategoryList.class, ProductCategoryJsonView.CategoryDetail.class,
+        ProductJsonView.ProductList.class, ProductJsonView.ProductDetail.class
+})
 public class ProductCategory {
 
     @Id
@@ -15,9 +23,14 @@ public class ProductCategory {
 
     private String categoryName;
 
+    //    @JsonView({ProductCategoryJsonView.CategoryList.class})
     @Lob
     private String categoryDescription;
 
+    /* */
+//    @JsonView({ProductCategoryJsonView.CategoryDetail.class})
+    @JsonView({ProductCategoryJsonView.CategoryDetail.class,
+            ProductJsonView.ProductDetail.class})
     @OneToMany
     private List<Product> categoryProducts;
 

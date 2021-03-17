@@ -3,10 +3,9 @@ package com.example.shopping.productservice.app.category.web;
 import com.example.shopping.productservice.app.category.domain.ProductCategory;
 import com.example.shopping.productservice.app.category.dto.ProductCategoryRequest;
 import com.example.shopping.productservice.app.category.service.ProductCategoryService;
+import com.example.shopping.productservice.app.category.util.ProductCategoryJsonView;
 import com.example.shopping.productservice.app.product.domain.Product;
-import com.example.shopping.productservice.exception.ErrorUtil;
-import com.example.shopping.productservice.exception.ProductCategoryException;
-import com.example.shopping.productservice.exception.ProductServiceException;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,12 +39,14 @@ public class ProductCategoryController {
     }
 
     // Get product category by category id
+    @JsonView({ProductCategoryJsonView.CategoryDetail.class})
     @GetMapping(value = "/category/{categoryId}")
     public ResponseEntity<?> getCategory(@PathVariable("categoryId") Long categoryId) {
         return ResponseEntity.status(HttpStatus.OK).body(productCategoryService.getProductCategory(categoryId));
     }
 
     // Get all product categories
+    @JsonView({ProductCategoryJsonView.CategoryList.class})
     @GetMapping
     public ResponseEntity<List<ProductCategory>> findAllProductCategory() {
         return ResponseEntity.status(HttpStatus.OK).body(productCategoryService.findAll());
@@ -64,9 +65,6 @@ public class ProductCategoryController {
     @PutMapping(value = "/category/edit")
     public ResponseEntity<?> updateCategory(@RequestBody @Valid ProductCategoryRequest productCategoryRequest) {
         productCategoryService.updateCategory(productCategoryRequest);
-        if (productCategoryRequest.getCategoryId() == null) {
-            return ErrorUtil.create(HttpStatus.BAD_REQUEST, "no category id");
-        }
 //        return new ResponseEntity<>(HttpStatus.OK);
         return ResponseEntity.status(HttpStatus.OK).body(productCategoryService.getProductCategory(productCategoryRequest.getCategoryId()));
     }
@@ -74,9 +72,6 @@ public class ProductCategoryController {
     // Delete category by category id
     @DeleteMapping(value = "/category/{categoryId}/delete")
     public ResponseEntity<?> deleteCategory(@PathVariable("categoryId") Long categoryId) {
-        if (categoryId == null) {
-            throw new ProductCategoryException("No category Id");
-        }
         productCategoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
